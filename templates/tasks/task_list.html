@@ -3,7 +3,9 @@
 {% block content %}
 <h2>Liste des tâches</h2>
 
+{% if user.is_staff %}
 <a href="{% url 'task_create' %}" class="btn btn-success mb-3">Ajouter tâche</a>
+{% endif %}
 
 <table class="table table-bordered">
     <tr>
@@ -23,8 +25,12 @@
         <td>{{ task.due_date }}</td>
         <td>{{ task.assigned_to.username }}</td>
         <td>
-            <a href="{% url 'task_update' task.id %}" class="btn btn-warning btn-sm">Modifier</a>
-            <a href="{% url 'task_delete' task.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+          {% if user.is_staff %}
+<a href="{% url 'task_update' task.id %}" class="btn btn-warning btn-sm">Modifier</a>
+<a href="{% url 'task_delete' task.id %}" class="btn btn-danger btn-sm">Supprimer</a>
+{% else %}
+<span class="badge bg-secondary">Lecture seule</span>
+{% endif %}
         </td>
     </tr>
     {% endfor %}
