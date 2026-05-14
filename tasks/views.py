@@ -83,3 +83,18 @@ def task_delete(request, id):
         return redirect('task_list')
 
     return render(request, 'tasks/task_delete.html', {'task': task})
+@login_required
+def update_status(request, id):
+
+    task = get_object_or_404(Task, id=id)
+
+    if not request.user.is_staff and task.assigned_to != request.user:
+        messages.error(request, "Accès refusé.")
+        return redirect('task_list')
+
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        task.status = new_status
+        task.save()
+
+    return redirect('task_list')
